@@ -9,7 +9,6 @@
 3. After install all packages write "npm run dev" to console
 4. Go to "localhost:5173"
 
-**** 
 
 ## Build app
 
