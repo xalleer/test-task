@@ -1,33 +1,39 @@
-import { createApp } from 'vue'
-import App from "./App.vue";
-import router from './router'
-import {createPinia} from 'pinia'
-import './style.css'
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import { createPinia, PiniaPluginContext } from 'pinia';
+import './style.css';
+
 const app = createApp(App);
-const pinia = createPinia()
+const pinia = createPinia();
 
-pinia.use((context) => {
-    const storeId = context.store.$id
+// Плагін для Pinia
+pinia.use((context: PiniaPluginContext) => {
+    const storeId = context.store.$id;
 
-    console.log(storeId)
+    console.log(storeId);
 
-    const serilizer = {
+    // Об'єкт для серіалізації/десеріалізації
+    const serializer = {
         serialize: JSON.stringify,
-        deserialize: JSON.parse
+        deserialize: (value: string) => JSON.parse(value),
+    };
+
+    // Отримання даних з localStorage, перевірка на null
+    const storedValue = window.localStorage.getItem(storeId);
+    const fromStorage = storedValue ? serializer.deserialize(storedValue) : null;
+
+    if (fromStorage) {
+        context.store.$patch(fromStorage);
     }
 
-    const fromStorage = serilizer.deserialize(window.localStorage.getItem(storeId))
-
-    if(fromStorage){
-        context.store.$patch(fromStorage)
-    }
-
+    // Підписка на зміни стану
     context.store.$subscribe((mutation, state) => {
-        window.localStorage.setItem(storeId, serilizer.serialize(state))
-    })
-})
+        window.localStorage.setItem(storeId, serializer.serialize(state));
+    });
+});
 
-
-app.use(pinia)
-app.use(router)
-app.mount('#app')
+// Використання Pinia та маршрутизатора
+app.use(pinia);
+app.use(router);
+app.mount('#app');

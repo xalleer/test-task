@@ -1,7 +1,10 @@
 import {defineStore} from "pinia";
 import CountryApi from '../http/modules/country.ts'
 import HolidayApi from '../http/modules/holiday.ts'
-
+interface Country {
+    countryCode: string;
+    name: string;
+}
 interface State {
     allCountries: any [],
     randomCountries: any[],
@@ -11,7 +14,7 @@ interface State {
 }
 
 export const country = defineStore('country', {
-    state: () => ({
+    state: () : State => ({
         allCountries: [],
         randomCountries: [],
         holidaysByCountry: {},
@@ -23,24 +26,14 @@ export const country = defineStore('country', {
         async aviableCounries(){
             try {
                 const res = await CountryApi.aviableCounries()
-                this.allCountries = res.data
+                this.allCountries = res.data as Country[];
             } catch (e) {
                 console.log(e)
             }
         },
 
-        getRandomCountries() {
-            const countries = [...this.allCountries];
-            this.randomCountries = [];
-
-            for (let i = 0; i < 3; i++) {
-                const randomIndex = Math.floor(Math.random() * countries.length);
-                this.randomCountries.push(countries[randomIndex]);
-                countries.splice(randomIndex, 1);
-            }
-        },
         async getRandomCountries() {
-            const countries = [...this.allCountries];
+            const countries = [...this.allCountries] as Country[];
             this.randomCountries = [];
             this.holidaysByCountry = {};
 
