@@ -39,7 +39,7 @@ onMounted(async () => {
     <section class="main-content">
       <div class="countries">
         <p>Countries list</p>
-        <div class="country" v-for="country of filteredCountries" @click="selectCountry(country)">
+        <div class="country" v-for="country of filteredCountries" :key="country.name" @click="selectCountry(country)">
           <img :src="flagUrl + country.countryCode.toLowerCase() + '.svg'" class="flag-image">
           <h1>{{ country.name }}</h1>
         </div>

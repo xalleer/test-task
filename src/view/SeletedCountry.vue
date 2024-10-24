@@ -27,7 +27,7 @@ onMounted(async () => {
 
     <section class="main-content">
       <div class="holidays-info">
-        <div class="holiday" v-for="holiday in CountryStore.publicHolidaysList">
+        <div class="holiday" v-for="holiday in CountryStore.publicHolidaysList" :key="holiday.name">
           <h1>{{ holiday.name }}</h1>
           <p>{{ holiday.date }}</p>
         </div>
